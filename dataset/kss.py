@@ -49,8 +49,16 @@ class KoreanSingleSpeakerSpeechDataset():
 		wav_filepaths = [(wav_filepath.split("/")[-1], wav_filepath) for wav_filepath in wav_filepaths]
 		wav_filepaths.sort(key=lambda x: x[0])
 		_, wav_filepaths = list(zip(*wav_filepaths))
+		meta_path = os.path.join(self.dataset_path, "transcript.v.1.4.txt")
 
-		transcripts = read_meta(os.path.join(self.dataset_path, "transcript.v.1.4.txt"))
+		with open(meta_path, mode='r', encoding='utf-8') as f:
+			lines = f.readlines()
+			lines.sort()
+
+		with open(meta_path, mode='w', encoding='utf-8') as f:
+			f.writelines(lines)
+
+		transcripts = read_meta(meta_path)
 
 		if len(wav_filepaths) != len(transcripts):
 			print("[ERROR] num of wavs and num of transcripts doesn't match! ({} vs. {})".format(len(wav_filepaths), len(transcripts)))
